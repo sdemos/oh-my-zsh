@@ -7,7 +7,8 @@ DEMOS_GIT_BAD="%{$fg[red]%}"
 DEMOS_CYAN=%{$'\e[0;36m'%}
 DEMOS_RESET="%{$reset_color%}"
 DEMOS_BOLD="%{$terminfo[bold]%}"
-DEMOS_SEPARATOR="$DEMOS_RESET$DEMOS_BOLD$DEMOS_BRACKET_COLOR|$DEMOS_RESET"
+DEMOS_SET_SEPARATOR="$DEMOS_RESET$DEMOS_BOLD$DEMOS_BRACKET_COLOR"
+DEMOS_SEPARATOR="$DEMOS_SET_SEPARATOR|$DEMOS_RESET"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="$DEMOS_SEPARATOR$DEMOS_BOLD"
 ZSH_THEME_GIT_PROMPT_SUFFIX="$DEMOS_BOLD"
@@ -16,8 +17,6 @@ ZSH_THEME_GIT_PROMPT_DIRTY="$DEMOS_GIT_BAD"
 ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$DEMOS_GIT_BAD-$DEMOS_RESET"
 ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$DEMOS_GIT_GOOD+$DEMOS_RESET"
 ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="$DEMOS_GIT_BAD±$DEMOS_RESET"
-
-local return_code="%(?..%{$fg[red]%}%? ↵$DEMOS_RESET)"
 
 function demos_git_prompt() {
   if [[ "$(git config --get oh-my-zsh.hide-status)" != "1" ]]; then
@@ -47,12 +46,12 @@ function demos_git_prompt() {
 }
 
 local user_host='$DEMOS_BOLD$DEMOS_BRACKET_COLOR│%{$fg[green]%}%m'
-local current_dir='$DEMOS_BOLD$DEMOS_CYAN%~$DEMOS_RESET'
 local git_branch='$DEMOS_BOLD$(demos_git_prompt)$(git_remote_status)$DEMOS_SEPARATOR$DEMOS_RESET'
+local current_dir='$DEMOS_BOLD$DEMOS_CYAN%~$DEMOS_RESET'
+local return_code="%(?..$DEMOS_SEPARATOR%{$fg[red]%}%?$DEMOS_RESET)"
 
-PROMPT="${user_host}${git_branch}${current_dir}
+PROMPT="${user_host}${git_branch}${current_dir}${return_code}
 %B│>%b "
-RPROMPT="${return_code}"
 
 
 
