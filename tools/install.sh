@@ -112,5 +112,9 @@ main() {
   printf "${NORMAL}"
   env zsh
 }
+hash /usr/bin/env git clone git@github.com:stphndemos/oh-my-zsh.git ~/.oh-my-zsh || /usr/bin/env git clone https://github.com/stphndemos/oh-my-zsh.git ~/.oh-my-zsh {
+  echo "something went wrong - the error is probably above ^^"
+  exit
+}
 
 main
