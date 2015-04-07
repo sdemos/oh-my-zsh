@@ -2,8 +2,8 @@
 # author: stphndemos
 
 DEMOS_BRACKET_COLOR="%{$fg[white]%}"
-DEMOS_GIT_GOOD="%{$fg[green]%}"
-DEMOS_GIT_BAD="%{$fg[red]%}"
+DEMOS_GOOD="%{$fg[green]%}"
+DEMOS_BAD="%{$fg[red]%}"
 DEMOS_CYAN=%{$'\e[0;36m'%}
 DEMOS_RESET="%{$reset_color%}"
 DEMOS_BOLD="%{$terminfo[bold]%}"
@@ -12,11 +12,11 @@ DEMOS_SEPARATOR="$DEMOS_SET_SEPARATOR|$DEMOS_RESET"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="$DEMOS_SEPARATOR$DEMOS_BOLD"
 ZSH_THEME_GIT_PROMPT_SUFFIX="$DEMOS_BOLD"
-ZSH_THEME_GIT_PROMPT_CLEAN="$DEMOS_GIT_GOOD"
-ZSH_THEME_GIT_PROMPT_DIRTY="$DEMOS_GIT_BAD"
-ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$DEMOS_GIT_BAD-$DEMOS_RESET"
-ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$DEMOS_GIT_GOOD+$DEMOS_RESET"
-ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="$DEMOS_GIT_BAD±$DEMOS_RESET"
+ZSH_THEME_GIT_PROMPT_CLEAN="$DEMOS_GOOD"
+ZSH_THEME_GIT_PROMPT_DIRTY="$DEMOS_BAD"
+ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$DEMOS_BAD-$DEMOS_RESET"
+ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$DEMOS_GOOD+$DEMOS_RESET"
+ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="$DEMOS_BAD±$DEMOS_RESET"
 
 function demos_git_prompt() {
   if [[ "$(git config --get oh-my-zsh.hide-status)" != "1" ]]; then
@@ -45,13 +45,28 @@ function demos_git_prompt() {
   fi
 }
 
+function demos_cabal_prompt() {
+  cabal_files=(*.cabal(N))
+  if [ $#cabal_files -gt 0 ]; then
+    # get the name of the cabal program
+    [[ $cabal_files =~ '(.+)\.cabal' ]] && local cabal_name=$match[1]
+    if [ -f cabal.sandbox.config ]; then
+      echo "$DEMOS_BOLD$DEMOS_GOOD${cabal_name}$DEMOS_SEPARATOR$DEMOS_RESET"
+    else
+      echo "$DEMOS_BOLD$DEMOS_BAD${cabal_name}$DEMOS_SEPARATOR$DEMOS_RESET"
+    fi
+  fi
+}
+
+
 local user_host='$DEMOS_SET_SEPARATOR│%{$fg[green]%}%m'
 local git_branch='$DEMOS_BOLD$(demos_git_prompt)$(git_remote_status)$DEMOS_SEPARATOR$DEMOS_RESET'
+local cabal_info='$(demos_cabal_prompt)$DEMOS_RESET'
 local current_dir='$DEMOS_BOLD$DEMOS_CYAN%~$DEMOS_RESET'
-local return_code="%(?..$DEMOS_SEPARATOR%{$fg[red]%}%?$DEMOS_RESET)"
-local prompt="$DEMOS_BOLD│> $DEMOS_RESET"
+local return_code='%(?..$DEMOS_SEPARATOR%{$fg[red]%}%?$DEMOS_RESET)'
+local prompt='$DEMOS_BOLD│> $DEMOS_RESET'
 
-PROMPT="${user_host}${git_branch}${current_dir}${return_code}
+PROMPT="${user_host}${git_branch}${cabal_info}${current_dir}${return_code}
 ${prompt}"
 
 
