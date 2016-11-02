@@ -50,7 +50,7 @@ function demos_cabal_prompt() {
   if [ $#cabal_files -gt 0 ]; then
     # get the name of the cabal program
     [[ $cabal_files =~ '(.+)\.cabal' ]] && local cabal_name=$match[1]
-    if [ -f cabal.sandbox.config ]; then
+    if [[ -f cabal.sandbox.config || -f stack.yaml ]]; then
       echo "$DEMOS_BOLD$DEMOS_GOOD${cabal_name}$DEMOS_SEPARATOR$DEMOS_RESET"
     else
       echo "$DEMOS_BOLD$DEMOS_BAD${cabal_name}$DEMOS_SEPARATOR$DEMOS_RESET"
